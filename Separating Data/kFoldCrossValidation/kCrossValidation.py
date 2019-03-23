@@ -16,6 +16,32 @@ def writeFoldsInFile(folds):
         f.write('\n')
     f.close()
 
+def writeSetsInFile(trainingSet, AvaliationSet):
+    f = open(path.abspath("Separating Data/kFoldCrossValidation/TrainingAndAvaliationSets.txt"), "w")
+    f.write("Training sets size : " + str(len(trainingSet[0])))
+    f.write('\n')
+    f.write("Avaliation sets size : " + str(len(AvaliationSet[0])))
+    f.write('\n')
+    f.write('\n')
+    for i in range(len(trainingSet)):
+        f.write("In the " + str(i) + " iteration of the kfold, the training set will be : ")
+        f.write('\n')
+        for j in range(len(trainingSet[i])):
+            f.write(str(trainingSet[i][j]) + " ,")
+
+        f.write('\n')
+        f.write(" And the avaliation set will be: ")
+        f.write('\n')
+
+        for j in range(len(AvaliationSet[i])):
+            f.write(str(AvaliationSet[i][j]) + " ,")
+
+        f.write('\n')
+        f.write('\n')
+    f.close()
+
+
+
 def getPercentagesOfEachElement(l):
     percentages = {}
     elements = list(set(l))
@@ -26,7 +52,7 @@ def getPercentagesOfEachElement(l):
         print("This group: " + str(element) + " represents " + str(percentage) + " of the database")
     return percentages
 
-def kCrossValidation(k, groups, traningSets=[[]], avaliationSets=[[]], stratified=True):
+def kCrossValidation(k, groups, traningSets=[], avaliationSets=[], stratified=True):
     print("-------------------------------")
     print("Making Cross Validation")
     datasetSize = len(groups)
@@ -38,8 +64,16 @@ def kCrossValidation(k, groups, traningSets=[[]], avaliationSets=[[]], stratifie
     else:
         folds = makeFolds(groups)
 
-    
+    for i in range(k):
+        trainingfold = []
+        selectedOutFold = i
+        for j in range(len(folds)):
+            if j is not i:
+                trainingfold.extend(folds[j])
+        traningSets.append(trainingfold)
+        avaliationSets.append(folds[i])
 
+    writeSetsInFile(traningSets, avaliationSets)
     print("-------------------------------")
 
 
