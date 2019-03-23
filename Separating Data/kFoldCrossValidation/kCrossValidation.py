@@ -104,19 +104,22 @@ def makeRandomFolds(k, groups, seed=42):
             fold.extend(getRandomElements(eachGroup[j], groupAndNumberOfElementsInEachFold[groupSets[j]]))
         folds.append(fold)
 
+    for i in range(len(eachGroup)):
+        if(len(eachGroup[i]) > 0):
+            for j in range(len(eachGroup[i])):
+                folds[len(folds) - 1].extend(eachGroup[i][j])
+
     writeFoldsInFile(folds)
     return folds
 
 def getRandomElements(l, n):
     elements  = []
     for i in range(n):
-        choice = random.choice(l)
-        l.remove(choice)
-        elements.append(choice)
+        if(len(l) != 0):
+            choice = random.choice(l)
+            l.remove(choice)
+            elements.append(choice)
     return elements
 
 def makeFolds(groups):
     return []
-
-kCrossValidation(5, [True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True,True, True, False, False, True])
-
