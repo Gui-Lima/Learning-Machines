@@ -2,6 +2,7 @@ import sys
 from os import path
 sys.path.insert(0, path.abspath('KNN/Distances/'))
 import Euclidean as euc
+from progress.bar import Bar
 
 class Knn:
 
@@ -32,15 +33,18 @@ class Knn:
         return self.getClass(neighbors)
 
     def test(self, avaliationSet):
+        bar = Bar('Processing', max=len(avaliationSet))
         corrects = 0
         for i in range(len(avaliationSet)):
             example = avaliationSet[i]
             actualClass = example[-1]
-            print("new example to be avaliated :" + str(example))
-            print("The actual class of this example is : " + str(actualClass))
+            #print("new example to be avaliated :" + str(example))
+            #print("The actual class of this example is : " + str(actualClass))
             predictedClass = self.getNewElementClass(example)
-            print("Predicted class is : " + str(predictedClass[0]))
+            #print("Predicted class is : " + str(predictedClass[0]))
             if (actualClass == predictedClass[0]):
                 corrects += 1
+            bar.next()
+        bar.finish()
         print("Of " + str(len(avaliationSet)) + " examples, we got " + str(corrects) + " of them right!")
         print("Final percentage correctness :" + str(corrects/len(avaliationSet)))

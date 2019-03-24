@@ -2,6 +2,7 @@
 import pandas as pd
 import sys
 from os import path
+
 sys.path.insert(0, path.abspath('Separating Data/kFoldCrossValidation/'))
 sys.path.insert(1, path.abspath('DataSets/KC1 - Software defect prediction/'))
 sys.path.insert(2, path.abspath('KNN/'))
@@ -16,8 +17,7 @@ dataSet = rd(path.abspath('DataSets/KC1 - Software defect prediction/Data.txt'),
 groups = dataSet['problems'].tolist()
 trainingSets = []
 avaliationSets = []
-kc(5, groups, trainingSets, avaliationSets)
-
+kc(10, groups, trainingSets, avaliationSets)
 
 for i in range(len(trainingSets)):
     tset=[]
@@ -28,5 +28,5 @@ for i in range(len(trainingSets)):
             tset.append(row.tolist())
         if tupla in avaliationSets[i]:
             aset.append(row.tolist())
-    k = Knn(tset, 3)
+    k = Knn(tset, 5)
     k.test(aset)
