@@ -1,6 +1,7 @@
 import pandas as pd
 import sys
 from os import path
+import matplotlib.pyplot
 
 sys.path.insert(0, path.abspath('Separating Data/kFoldCrossValidation/'))
 sys.path.insert(1, path.abspath('DataSets/KC1 - Software defect prediction/'))
@@ -13,21 +14,53 @@ from KNN import Knn
 import Reading as r
 
 
-dataSet = r.readDataSet(rd.relPath, rd.columns)
-groups = dataSet['problems'].tolist()
-trainingSets = []
-avaliationSets = []
-kc(10, groups, trainingSets, avaliationSets)
-dataSet = dataSet.apply(pd.to_numeric)
+def simpleKnn():
+    dataSet = r.readDataSet(rd.relPath, rd.columns)
+    groups = dataSet['problems'].tolist()
+    trainingSets = []
+    avaliationSets = []
+    kc(5, groups, trainingSets, avaliationSets)
+    dataSet = dataSet.apply(pd.to_numeric)
 
-for i in range(len(trainingSets)):
-    tset=[]
-    aset=[]
-    for index, row in dataSet.iterrows():
-        tupla = (dataSet.iloc[index]['problems'], index)
-        if tupla in trainingSets[i]:
-            tset.append(row.tolist())
-        if tupla in avaliationSets[i]:
-            aset.append(row.tolist())
-    k = Knn(tset, 5)
-    k.test(aset)
+    for i in range(len(trainingSets)):
+        tset=[]
+        aset=[]
+        for index, row in dataSet.iterrows():
+            tupla = (dataSet.iloc[index]['problems'], index)
+            if tupla in trainingSets[i]:
+                tset.append(row.tolist())
+            if tupla in avaliationSets[i]:
+                aset.append(row.tolist())
+        k = Knn(tset, 2)
+        k.test(aset)
+
+
+def makeGraph():
+    dataSet = r.readDataSet(rd.relPath, rd.columns)
+    groups = dataSet['problems'].tolist()
+    trainingSets = []
+    avaliationSets = []
+    kc(5, groups, trainingSets, avaliationSets)
+    dataSet = dataSet.apply(pd.to_numeric)
+
+    ks = [1,2,3,5,7,9,11,13,15]
+    means = []
+    for j in ks:
+        correctPercentage = 0
+        for i in range(len(trainingSets)):
+            tset=[]
+            aset=[]
+            for index, row in dataSet.iterrows():
+                tupla = (dataSet.iloc[index]['problems'], index)
+                if tupla in trainingSets[i]:
+                    tset.append(row.tolist())
+                if tupla in avaliationSets[i]:
+                    aset.append(row.tolist())
+            k = Knn(tset, j)
+            correctPercentage += k.test(aset)     
+        generalMean = correctPercentage / len(trainingSets)
+        means.append(generalMean)
+    matplotlib.pyplot.plot(ks, means)
+    matplotlib.pyplot.show()
+
+makeGraph()

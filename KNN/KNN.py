@@ -48,3 +48,4 @@ class Knn:
         bar.finish()
         print("Of " + str(len(avaliationSet)) + " examples, we got " + str(corrects) + " of them right!")
         print("Final percentage correctness :" + str(corrects/len(avaliationSet)))
+        return corrects/len(avaliationSet)
