@@ -6,18 +6,31 @@ from progress.bar import Bar
 
 class Knn:
 
-    def __init__(self, trainingSet, k):
+    def __init__(self, trainingSet, k, weighted=False):
       self.trainingSet = trainingSet
       self.k = k
+      self.weighted = weighted
 
     def getClass(self, neighbors):
         votes = {}
         for i in range(len(neighbors)):
             response = neighbors[i][0][-1]
             if response in votes:
-                votes[response] += 1
+                if self.weighted:
+                    if 1/neighbors[i][1] is not 0:
+                        votes[response] += 1/neighbors[i][1]
+                    else:
+                        votes[response] += 0
+                else:
+                    votes[response] += 1
             else:
-                votes[response] = 1
+                if self.weighted:
+                    if 1/neighbors[i][1] is not 0:
+                        votes[response] = 1/neighbors[i][1]
+                    else:
+                        votes[response] = 0
+                else:
+                    votes[response] = 1
         return sorted(votes.keys())[:1]
 
 
