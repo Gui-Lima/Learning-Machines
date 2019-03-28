@@ -48,17 +48,36 @@ class Knn:
     def test(self, avaliationSet):
         bar = Bar('Processing', max=len(avaliationSet))
         corrects = 0
+        classErrors = {}
+        classNumbers = {}
+
         for i in range(len(avaliationSet)):
             example = avaliationSet[i]
             actualClass = example[-1]
+
+            if actualClass in classNumbers:
+                classNumbers[actualClass] += 1
+            else
+                classNumbers[actualClass] = 1
+
             #print("new example to be avaliated :" + str(example))
             #print("The actual class of this example is : " + str(actualClass))
             predictedClass = self.getNewElementClass(example)
             #print("Predicted class is : " + str(predictedClass[0]))
             if (actualClass == predictedClass[0]):
+                if actualClass in classErrors:
+                    classErrors[actualClass] += 1
+                elif actualClass not in classErrors:
+                    classErrors[actualClass] = 1
                 corrects += 1
             bar.next()
         bar.finish()
         print("Of " + str(len(avaliationSet)) + " examples, we got " + str(corrects) + " of them right!")
         print("Final percentage correctness :" + str(corrects/len(avaliationSet)))
+        showClassErrors()
         return corrects/len(avaliationSet)
+
+
+    def showClassErrors(self, classErrors, classNumbers):
+        for i in classErrors.keys():
+            print("Erro na clase: " + str(i) + " " + str(classErrors[i]/classNumbers[i]))
