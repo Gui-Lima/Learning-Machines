@@ -77,7 +77,8 @@ def kCrossValidation(k, groups, traningSets=[], avaliationSets=[], stratified=Tr
     print("-------------------------------")
 
 
-def makeRandomFolds(k, groups, seed=42):
+def makeRandomFolds(k, groups, seed=None):
+    random.seed(seed)
     folds = []
     setSize  = round(len(groups)/k)
     percentagesOfEachGroup = getPercentagesOfEachElement(groups)
