@@ -7,43 +7,64 @@ from progress.bar import Bar
 import math
 from TimeMeasure import profile as profile
 from TimeMeasure import print_prof_data
+from Global import  knnTypes
+
 
 class Knn:
 
-    def __init__(self, trainingSet, k, weighted=False):
+    def __init__(self, trainingSet, k, tp = knnTypes.NORMAL):
       self.trainingSet = trainingSet
       self.k = k
-      self.weighted = weighted
+      self.tp = tp
+      if tp == knnTypes.ADAPTATIVE:
+          self.r = self.calculateR()
+
+    
+    def computeVote(self, neighbors, i):
+        result = 0
+        if self.tp == knnTypes.WEIGHTED:
+            if neighbors[i][1] != 0:
+                result = 1/math.pow(neighbors[i][1], 2)
+        elif self.tp == knnTypes.ADAPTATIVE:
+            if self.r[i] != 0:
+                result = neighbors[i][1]/self.r[i]
+        elif self.tp == knnTypes.NORMAL:
+            result = 1
+        return result
+            
 
     def getClass(self, neighbors):
         votes = {}
         for i in range(len(neighbors)):
             response = neighbors[i][0][-1]
             if response in votes:
-                if self.weighted:
-                    if neighbors[i][1] != 0:
-                        votes[response] += 1/math.pow(neighbors[i][1], 2)
-                    else:
-                        votes[response] += 0
-                else:
-                    votes[response] += 1
+                votes[response] += self.computeVote(neighbors, i)
             else:
-                if self.weighted:
-                    if neighbors[i][1] != 0:
-                        votes[response] = 1/math.pow(neighbors[i][1], 2)
-                    else:
-                        votes[response] = 0
-                else:
-                    votes[response] = 1
+                votes[response] = self.computeVote(neighbors, i)
+
         return sorted(votes.keys())[:1]
 
 
-    def getNeighbors(self, newPoint):
+    def calculateR(self):
+        r = {}
+        index = 0
+        for i in self.trainingSet:
+            r[index] = 0
+            iNeighbors = self.getNeighbors(i, useK=False)
+            for j in iNeighbors:
+                if j[0][-1] == i[-1]:
+                    r[index] = j[1]
+                else:
+                    break
+            index += 1
+        return r
+
+    def getNeighbors(self, newPoint, useK = True):
         distances = []
         for i in range(len(self.trainingSet)):
             distances.append((self.trainingSet[i] , euc.getDistance(self.trainingSet[i], newPoint)))
         sortedDistances = sorted(distances, key=lambda tup: tup[1])
-        return sortedDistances[:self.k]
+        return (sortedDistances[:self.k] if useK else sortedDistances)
 
     def getNewElementClass(self, newPoint):
         neighbors = self.getNeighbors(newPoint)

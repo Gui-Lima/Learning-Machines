@@ -4,13 +4,16 @@ from os import path
 import matplotlib.pyplot
 import numpy as np
 
+
 sys.path.insert(0, path.abspath('Separating Data/kFoldCrossValidation/'))
 sys.path.insert(1, path.abspath('KNN/'))
 sys.path.insert(2, path.abspath('DataSets/'))
+sys.path.insert(3, path.abspath('./'))
 
 from kCrossValidation import kFoldCrossValidation as kc
 from KNN import Knn
 import Reading as r
+from Global import  knnTypes
 
 
 #   This is the knn test using kfold cross validation
@@ -44,7 +47,7 @@ def simpleKnn(relPath, columns, resultColumn,k ,weight):
                 tset.append(row.tolist())
             if tupla in avaliationSets[i]:
                 aset.append(row.tolist())
-        k = Knn(tset, 1)
+        k = Knn(tset, 1, tp = knnTypes.ADAPTATIVE)
         k.test(aset)
 
 def makeGraph(relPath, columns, resultColumn,k ,weight):
