@@ -39,7 +39,7 @@ def simpleKnn(relPath, columns, resultColumn,k ,weight):
         tset=[]
         aset=[]
         for index, row in dataSet.iterrows():
-            tupla = (dataSet.iloc[index]['DL'], index)
+            tupla = (dataSet.iloc[index][resultColumn], index)
             if tupla in trainingSets[i]:
                 tset.append(row.tolist())
             if tupla in avaliationSets[i]:
@@ -181,3 +181,7 @@ test1 = {'columns' : ['PERCENT_PUB_DATA numeric'
 test2 = {'columns' : ['loc', 'v(g)', 'ev(g)', 'iv(g)', 'n', 'v', 'l', 'd', 'i', 'e','b','t','lOCode', 'lOComment', 'lOBlank', 'lOCodeAndComment', 'uniq_Op', 'uniq_Opnd', 'total_Op', 'total_Opnd', 'branchCount', 'problems']
 , 'relPath' : path.abspath('DataSets/KC1 - Software defect prediction/Data.txt')
 , 'classColumn' : 'problems'}
+
+
+
+test(test2, graph=True)

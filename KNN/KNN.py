@@ -1,9 +1,12 @@
 import sys
 from os import path
 sys.path.insert(0, path.abspath('KNN/Distances/'))
+sys.path.insert(1, path.abspath('./'))
 import Euclidean as euc
 from progress.bar import Bar
 import math
+from TimeMeasure import profile as profile
+from TimeMeasure import print_prof_data
 
 class Knn:
 
@@ -51,6 +54,7 @@ class Knn:
         for i in classErrors.keys():
             print("Acerto na clase: " + str(i) + " " + str(classErrors[i]/classNumbers[i]))
 
+    @profile
     def test(self, avaliationSet):
         bar = Bar('Processing', max=len(avaliationSet))
         corrects = 0
@@ -81,5 +85,6 @@ class Knn:
         print("Of " + str(len(avaliationSet)) + " examples, we got " + str(corrects) + " of them right!")
         print("Final percentage correctness :" + str(corrects/len(avaliationSet)))
         self.showClassErrors(classErrors, classNumbers)
+        print_prof_data()
         return corrects/len(avaliationSet)
 
