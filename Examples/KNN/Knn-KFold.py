@@ -13,6 +13,13 @@ from KNN import Knn
 import Reading as r
 
 
+#   This is the knn test using kfold cross validation
+#   You can run test1 or tes2, representing two different datasets
+#   just run test(test1). Run it on the last lines.
+#   If you want to run with many k and have a graph, run with graph = True, choose kfold "k" with k = int, and choose knn type with type = weight|adaptative|normal
+#  
+
+
 def test(testId, graph=False, k=5, weight=False):
     if graph:
         makeGraph(testId['relPath'], testId['columns'], testId['classColumn'], k, weight)
@@ -174,7 +181,3 @@ test1 = {'columns' : ['PERCENT_PUB_DATA numeric'
 test2 = {'columns' : ['loc', 'v(g)', 'ev(g)', 'iv(g)', 'n', 'v', 'l', 'd', 'i', 'e','b','t','lOCode', 'lOComment', 'lOBlank', 'lOCodeAndComment', 'uniq_Op', 'uniq_Opnd', 'total_Op', 'total_Opnd', 'branchCount', 'problems']
 , 'relPath' : path.abspath('DataSets/KC1 - Software defect prediction/Data.txt')
 , 'classColumn' : 'problems'}
-
-
-
-test(test1, True, 5, False)
