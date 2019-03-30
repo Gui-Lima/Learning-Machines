@@ -7,17 +7,23 @@ from progress.bar import Bar
 import math
 from TimeMeasure import profile as profile
 from TimeMeasure import print_prof_data
+from TimeMeasure import clear_prof_data
+
 from Global import  knnTypes
 
 
 class Knn:
 
+    @profile
     def __init__(self, trainingSet, k, tp = knnTypes.NORMAL):
-      self.trainingSet = trainingSet
-      self.k = k
-      self.tp = tp
-      if tp == knnTypes.ADAPTATIVE:
-          self.r = self.calculateR()
+        self.trainingSet = trainingSet
+        self.k = k
+        self.tp = tp
+        if tp == knnTypes.ADAPTATIVE:
+            print("Since you've chosen Adaptative, here's the calculations: ")
+            self.r = self.calculateR()
+        print_prof_data()
+
 
     
     def computeVote(self, neighbors, i):
@@ -46,6 +52,7 @@ class Knn:
 
 
     def calculateR(self):
+        bar = Bar('Processing R', max=len(self.trainingSet))
         r = {}
         index = 0
         for i in self.trainingSet:
@@ -57,6 +64,8 @@ class Knn:
                 else:
                     break
             index += 1
+            bar.next()
+        bar.finish()
         return r
 
     def getNeighbors(self, newPoint, useK = True):
@@ -77,7 +86,7 @@ class Knn:
 
     @profile
     def test(self, avaliationSet):
-        bar = Bar('Processing', max=len(avaliationSet))
+        bar = Bar('Processing new examples', max=len(avaliationSet))
         corrects = 0
         classErrors = {}
         classNumbers = {}

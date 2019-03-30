@@ -50,7 +50,7 @@ def simpleKnn(relPath, columns, resultColumn,k ,tp):
         k = Knn(tset, 1, tp = tp)
         k.test(aset)
 
-def makeGraph(relPath, columns, resultColumn,k ,weight):
+def makeGraph(relPath, columns, resultColumn,k ,tp):
     dataSet = r.readDataSet(relPath, columns)
     trainingSets = []
     avaliationSets = []
@@ -72,7 +72,7 @@ def makeGraph(relPath, columns, resultColumn,k ,weight):
                     tset.append(row.tolist())
                 if tupla in avaliationSets[i]:
                     aset.append(row.tolist())
-            k = Knn(tset, j)
+            k = Knn(tset, j, tp = tp)
             correctPercentage += k.test(aset)     
         generalMean = correctPercentage / len(trainingSets)
         means.append(generalMean)
@@ -185,3 +185,6 @@ test2 = {'columns' : ['loc', 'v(g)', 'ev(g)', 'iv(g)', 'n', 'v', 'l', 'd', 'i', 
 , 'relPath' : path.abspath('DataSets/KC1 - Software defect prediction/Data.txt')
 , 'classColumn' : 'problems'}
 
+
+
+test(test1, graph=True, k=5, tp = knnTypes.ADAPTATIVE)
