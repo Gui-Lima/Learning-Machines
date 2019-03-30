@@ -23,14 +23,14 @@ from Global import  knnTypes
 #  
 
 
-def test(testId, graph=False, k=5, weight=False):
+def test(testId, graph=False, k=5, tp = knnTypes.NORMAL):
     if graph:
-        makeGraph(testId['relPath'], testId['columns'], testId['classColumn'], k, weight)
+        makeGraph(testId['relPath'], testId['columns'], testId['classColumn'], k, tp)
     else:
-        simpleKnn(testId['relPath'], testId['columns'], testId['classColumn'], k, weight)
+        simpleKnn(testId['relPath'], testId['columns'], testId['classColumn'], k, tp)
 
 
-def simpleKnn(relPath, columns, resultColumn,k ,weight):
+def simpleKnn(relPath, columns, resultColumn,k ,tp):
     dataSet = r.readDataSet(relPath, columns)
     trainingSets = []
     avaliationSets = []
@@ -47,7 +47,7 @@ def simpleKnn(relPath, columns, resultColumn,k ,weight):
                 tset.append(row.tolist())
             if tupla in avaliationSets[i]:
                 aset.append(row.tolist())
-        k = Knn(tset, 1, tp = knnTypes.ADAPTATIVE)
+        k = Knn(tset, 1, tp = tp)
         k.test(aset)
 
 def makeGraph(relPath, columns, resultColumn,k ,weight):
@@ -185,6 +185,3 @@ test2 = {'columns' : ['loc', 'v(g)', 'ev(g)', 'iv(g)', 'n', 'v', 'l', 'd', 'i', 
 , 'relPath' : path.abspath('DataSets/KC1 - Software defect prediction/Data.txt')
 , 'classColumn' : 'problems'}
 
-
-
-test(test2, graph=True)
