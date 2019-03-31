@@ -48,7 +48,7 @@ class Knn:
             else:
                 votes[response] = self.computeVote(neighbors, i)
 
-        return sorted(votes.keys())[:1]
+        return sorted(votes)[:1]
 
 
     def calculateR(self):
@@ -72,7 +72,7 @@ class Knn:
         distances = []
         for i in range(len(self.trainingSet)):
             distances.append((self.trainingSet[i] , euc.getDistance(self.trainingSet[i], newPoint)))
-        sortedDistances = sorted(distances, key=lambda tup: tup[1])
+        sortedDistances = sorted(distances, key= lambda  tup: tup[1])
         return (sortedDistances[:self.k] if useK else sortedDistances)
 
     def getNewElementClass(self, newPoint):
@@ -82,7 +82,7 @@ class Knn:
 
     def showClassErrors(self, classErrors, classNumbers):
         for i in classErrors.keys():
-            print("Acerto na clase: " + str(i) + " " + str(classErrors[i]/classNumbers[i]))
+            print("Acerto na classe: " + str(i) + " " + str(classErrors[i]/classNumbers[i]))
 
     @profile
     def test(self, avaliationSet):
