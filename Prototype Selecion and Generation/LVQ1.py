@@ -3,8 +3,10 @@ from os import path
 import sys
 sys.path.insert(0, path.abspath('KNN/Distances/'))
 sys.path.insert(1, path.abspath('./'))
+sys.path.insert(2, path.abspath('Prototype Selecion and Generation/'))
 import Euclidean as euc
 from Global import listOps
+from InitialSelections import Selection as sel
 
 class LVQ1:
 
@@ -15,33 +17,13 @@ class LVQ1:
         self.groups = [i[-1] for i in trainingSet]
         self.seed = seed
 
-    def update(self, newTrainingset):
-        self.trainingSet = newTrainingset
-
-    def selection(self, prototypes=2, inplace=False):
-        random.seed(self.seed)
-        elements = []
-        classes = list(set(self.groups))
-        for i in classes:
-            for j in range(prototypes):
-                randomElement = self.getRandomElementFromClass(i)
-                elements.append(randomElement)
-                if inplace:
-                    self.trainingSet.remove(randomElement)
+    def selection(self, prototypes, inplace=False):
+        s = sel(self.trainingSet, self.classColumn, prototypes)
+        elements = s.randomNSelectionEachClass()
         return elements
 
-    def getRandomElement(self, inplace=False):
+    def getRandomElement(self):
         choice = random.choice(self.trainingSet)
-        if inplace:
-            self.trainingSet.remove(choice)
-        return choice
-
-    def getRandomElementFromClass(self, requestedClass, inplace=False):
-        choice = random.choice(self.trainingSet)
-        while self.getClass(choice) != requestedClass:
-            choice = random.choice(self.trainingSet)
-        if inplace:
-            self.trainingSet.remove(choice)
         return choice
 
     def getNearestNeighbor(self, point, dataset, inplace=False):
@@ -60,16 +42,16 @@ class LVQ1:
     def alpha(self, alpha, s):
         return alpha/(1 + s*alpha)
 
-    def run(self):
+    def run(self, nPrototypes=5):
         print("Starting LVQ1")
         lo = listOps()
-        startingElements = self.selection(prototypes=5)
+        startingElements = self.selection(nPrototypes)
         self.writeElementsInFile(startingElements)
         nIter = 0
         nIterMax = 100
         Alpha = 0.99
         while nIter < nIterMax:
-            randomElement = self.getRandomElement(inplace=True)
+            randomElement = self.getRandomElement()
             nearestNeighbor = self.getNearestNeighbor(randomElement, startingElements)
             startingElements.remove(nearestNeighbor)
             if randomElement is nearestNeighbor:
@@ -91,6 +73,8 @@ class LVQ1:
         self.writeNewElementsInFile(startingElements)
         return startingElements
 
+    # Debug Functions
+    
     def writeElementsInFile(self, elements):
         f = open(path.abspath("Prototype Selecion and Generation/ElementsDebug.txt"), "w")
         f.write("Initial Prototypes")
