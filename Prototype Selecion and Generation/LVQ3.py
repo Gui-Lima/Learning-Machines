@@ -50,11 +50,11 @@ class LVQ3:
     def alpha(self, alpha, s):
         return alpha/(1 + s * alpha)
 
-    def run(self):
+    def run(self, nPrototypes=5):
         print("Starting LVQ2.1")
         lo = listOps()
         lvq = LVQ1(self.trainingSet, self.classColumn)
-        startingElements = lvq.run()
+        startingElements = lvq.run(nPrototypes=nPrototypes)
         self.writeElementsInFile(startingElements)
         nIter = 0
         nIterMax = 100
