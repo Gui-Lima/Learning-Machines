@@ -24,8 +24,7 @@ class Knn:
             self.r = self.calculateR()
         print_prof_data()
 
-
-    
+   
     def computeVote(self, neighbors, i):
         result = 0
         if self.tp == knnTypes.WEIGHTED:
@@ -99,11 +98,8 @@ class Knn:
                 classNumbers[actualClass] += 1
             else:
                 classNumbers[actualClass] = 1
-
-            #print("new example to be avaliated :" + str(example))
-            #print("The actual class of this example is : " + str(actualClass))
+                
             predictedClass = self.getNewElementClass(example)
-            #print("Predicted class is : " + str(predictedClass[0]))
             if (actualClass == predictedClass[0]):
                 if actualClass in classErrors:
                     classErrors[actualClass] += 1
@@ -116,5 +112,4 @@ class Knn:
         print("Final percentage correctness :" + str(corrects/len(avaliationSet)))
         self.showClassErrors(classErrors, classNumbers)
         print_prof_data()
-        return corrects/len(avaliationSet)
-
+        return (corrects/len(avaliationSet), classErrors, classNumbers)
