@@ -19,7 +19,7 @@ class LVQ1:
 
     def selection(self, prototypes, inplace=False):
         s = sel(self.trainingSet, self.classColumn, prototypes)
-        elements = s.randomNSelectionEachClass()
+        elements = s.randomNSelectionEachClass(inplace=inplace)
         return elements
 
     def getRandomElement(self):
@@ -52,23 +52,22 @@ class LVQ1:
         Alpha = 0.99
         while nIter < nIterMax:
             randomElement = self.getRandomElement()
-            nearestNeighbor = self.getNearestNeighbor(randomElement, startingElements)
-            startingElements.remove(nearestNeighbor)
+            nearestNeighbor = self.getNearestNeighbor(randomElement, startingElements, inplace=True) # I'm removing the prototype so i can change it then add it again
             if randomElement is nearestNeighbor:
                 break
             randomElementClass = self.getClass(randomElement)
             nearestNeighborClass = self.getClass(nearestNeighbor)
-            randomElement.pop()
+            randomElement.pop() # Taking off class column to make the lists arit.
             nearestNeighbor.pop()
             if randomElementClass is nearestNeighborClass:
                 nearestNeighbor = lo.listSub(nearestNeighbor, (lo.scalarMultList(Alpha, lo.listSub(randomElement, nearestNeighbor))))
-                Alpha = self.alpha(Alpha, 1)
+                Alpha = self.alpha(Alpha, 1) 
             else:
                 nearestNeighbor = lo.listSum(nearestNeighbor, (lo.scalarMultList(Alpha, lo.listSub(randomElement, nearestNeighbor))))
                 Alpha = self.alpha(Alpha, -1)
-            nearestNeighbor.append(nearestNeighborClass)
+            nearestNeighbor.append(nearestNeighborClass) # Putting the class back
             randomElement.append(randomElementClass)
-            startingElements.append(nearestNeighbor)
+            startingElements.append(nearestNeighbor) # Putting the prototype back
             nIter += 1
         self.writeNewElementsInFile(startingElements)
         return startingElements

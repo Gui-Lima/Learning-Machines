@@ -19,8 +19,8 @@ class LVQ21:
         self.w = w
 
     def isInWindow(self, di, dj):
-        didj = di/dj
-        djdi = dj/di
+        didj = di/dj if dj != 0 else 0
+        djdi = dj/di if di != 0 else 0
         s = (1 - self.w) / (1 + self.w)
         return min(didj, djdi) > s
 
@@ -30,17 +30,8 @@ class LVQ21:
             self.trainingSet.remove(choice)
         return choice
 
-    def getRandomElementFromClass(self, requestedClass, inplace=False):
-        choice = random.choice(self.trainingSet)
-        while self.getClass(choice) != requestedClass:
-            choice = random.choice(self.trainingSet)
-        if inplace:
-            self.trainingSet.remove(choice)
-        return choice
-
     def getClass(self, point):
         return point[-1:][0]
-
 
     def getNearestNeighbors(self, point, dataset, inplace=False):
         distances = []
@@ -100,6 +91,10 @@ class LVQ21:
             nIter += 1
         self.writeNewElementsInFile(startingElements)
         return startingElements
+
+
+
+    # Debug Functions
 
     def writeElementsInFile(self, elements):
         f = open(path.abspath("Prototype Selecion and Generation/ElementsDebug.txt"), "w")
