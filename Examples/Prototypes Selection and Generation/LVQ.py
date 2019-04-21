@@ -6,7 +6,7 @@ import pandas as pd
 import sys
 from os import path
 import numpy as np
-import matplotlib.pyplot
+import matplotlib.pyplot as plt
 
 sys.path.insert(0, path.abspath('Separating Data/kFoldCrossValidation/'))
 sys.path.insert(1, path.abspath('Prototype Selecion and Generation/'))
@@ -119,33 +119,53 @@ def _makeGraph(relPath, columns, resultColumn):
     dataSet = r.readDataSet(relPath, columns)
     trainingSets = []
     avaliationSets = []
-    kfold = kc(dataSet, 5, resultColumn, True)
+    kfold = kc(dataSet, 10, resultColumn, True)
     kfold.run(trainingSets, avaliationSets, stratified = True)
     dataSet = dataSet.apply(pd.to_numeric)
 
-    ks = [1,2,3,5,7,9,11,13,15]
-    means = []
-    for j in ks:
-        print("Using k = " + str(j))
-        correctPercentage = 0
-        for i in range(len(trainingSets)):
-            tset=[]
-            aset=[]
-            for index, row in dataSet.iterrows():
-                tupla = (dataSet.iloc[index][resultColumn], index)
-                if tupla in trainingSets[i]:
-                    tset.append(row.tolist())
-                if tupla in avaliationSets[i]:
-                    aset.append(row.tolist())
-            k = Knn(tset, j, tp = 0)
-            correctPercentage += k.test(aset)     
-        generalMean = correctPercentage / len(trainingSets)
-        means.append(generalMean)
-    matplotlib.pyplot.plot(ks, means)
-    matplotlib.pyplot.show()
+    ks = [1,3]
+    nPrototypes = [3,5,10,20]
+    
+    for k in ks:
+        meansGeral = []
+        meansFalse = []
+        meansTrue = []
+        for j in nPrototypes:
+            correctnessPercentage = 0
+            correctTrue = 0
+            correctFalse = 0
+            for i in range(len(trainingSets)):
+                print("\n")
+                print(" --------- FOLD " + str(i+1) +  " ----------------")
+                tset=[]
+                aset=[]
+                for index, row in dataSet.iterrows():
+                    tupla = (dataSet.iloc[index][resultColumn], index)
+                    if tupla in trainingSets[i]:
+                        tset.append(row.tolist())
+                    if tupla in avaliationSets[i]:
+                        aset.append(row.tolist())
+                lvq = LVQ3(tset, resultColumn)
+                newtset = lvq.run(nPrototypes=j)
+                kn = Knn(newtset, k)
+                result = kn.test(aset)
+                correctnessPercentage += result[0]
+                classErrors = result[1]
+                classNumbers = result[2]
+                correctFalse += (classErrors[False]/classNumbers[False]) if False in classErrors.keys() else 0
+                correctTrue += (classErrors[True]/classNumbers[True]) if True in classErrors.keys() else 0
+            meansGeral.append(correctnessPercentage/len(trainingSets))
+            meansFalse.append(correctFalse/len(trainingSets))
+            meansTrue.append(correctTrue/len(trainingSets))
+        plt.ylim(0,1)    
+        plt.plot(nPrototypes, meansGeral, 'r', label='general')
+        plt.plot(nPrototypes, meansFalse, 'g', label='false')
+        plt.plot(nPrototypes, meansTrue,  'b', label='true')
+        plt.legend(loc='upper left')
+        plt.show()
 
 
 
-_LVQ1(test2['relPath'], test2['columns'], test2['classColumn'])
-_LVQ2(test2['relPath'], test2['columns'], test2['classColumn'])
-_LVQ3(test2['relPath'], test2['columns'], test2['classColumn'])
+
+
+_makeGraph(test1['relPath'], test1['columns'], test1['classColumn'])
