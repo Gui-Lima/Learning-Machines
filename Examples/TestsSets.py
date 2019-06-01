@@ -101,3 +101,7 @@ test1 = {'columns' : ['PERCENT_PUB_DATA numeric'
 test2 = {'columns' : ['loc', 'v(g)', 'ev(g)', 'iv(g)', 'n', 'v', 'l', 'd', 'i', 'e','b','t','lOCode', 'lOComment', 'lOBlank', 'lOCodeAndComment', 'uniq_Op', 'uniq_Opnd', 'total_Op', 'total_Opnd', 'branchCount', 'problems']
 , 'relPath' : path.abspath('DataSets/KC1 - Software defect prediction/Data.txt')
 , 'classColumn' : 'problems'}
+
+test3 = {'columns' : ['x', 'y', 'label'],
+'relPath' : path.abspath('DataSets/FinlandJoensuuSpiral/Data.txt')
+, 'classColumn' : 'label'}
