@@ -10,6 +10,10 @@ sys.path.insert(2, path.abspath('./'))
 from ACKnnD import AdaptativeClustering
 import Reading as r
 
+#  To test this machine just put on the last line the test you want it to run.
+#
+#
+#
 
 def test(testId):
     makeGraph(testId['relPath'], testId['columns'], testId['classColumn'])
