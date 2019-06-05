@@ -24,11 +24,9 @@ class Kdt:
         return self.model
 
     def median_column(self, data, itera):
-        total = 0
-        print(data)
-        for i in data:
-            total += i[1][itera]
-        return float(total)/len(data)
+        median_list = sorted(data, key=lambda x: x[1][itera])
+        a = median_list[int(len(median_list)/2)][1][itera]
+        return a
 
     def kdtree_recursion(self, data, quant_att, itera):
         left = []
@@ -60,10 +58,7 @@ class Kdt:
             return self.find_neighbors(model, instance,k, itera+1)
 
     def knn(self, neighbors, instance, k):
-        calc_dist = lambda x: euc.getDistance(instance, x[1])
+        calc_dist = lambda x: euc.getDistance(instance, x[1]) if euc.getDistance(instance, x[1]) !=0 else float("inf")
         neighbors.sort(key=calc_dist)
         return neighbors[:k]
         
-    def printTree(self):
-        for i in self.model:
-            print(i)

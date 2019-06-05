@@ -93,7 +93,6 @@ class Knn:
         for i in range(len(avaliationSet)):
             example = avaliationSet[i]
             actualClass = example[-1]
-
             if actualClass in classNumbers:
                 classNumbers[actualClass] += 1
             else:
